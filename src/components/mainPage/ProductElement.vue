@@ -34,18 +34,17 @@ export default {
   data () {
     return {
       currentColor: this.product.colors[0].color.code,
-      currentImg: this.product.colors[0].gallery[0].file.url,
+      // currentImg: this.product.colors[0].gallery[0].file.url,
       shadow: '0 0 3px 1px #666'
     }
   },
   props: ['product'],
   computed: {
     // currentImg () {
-    //     if (this.product.colors[0].gallery !== null) {
-    //       return this.product.colors[0].gallery[0].file.url
-    //     } else {
-    //       return null
-    //     }
+    //   if (this.product.colors[0].gallery !== null) {
+    //     return this.product.colors[0].gallery[0].file.url
+    //   } else {
+    //     return null
     //   }
     // }
   },

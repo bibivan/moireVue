@@ -22,7 +22,7 @@ export default {
   actions: {
     async loadProducts (context) {
       context.commit('setProductsLoadingStatus', true)
-      const url = new URL('/api/products?limit=12', API_BASE_URL)
+      const url = new URL('/api/products?limit=14', API_BASE_URL)
       // const params = new URLSearchParams(url.search)
       // params.set('limit', '3')
       const response = await fetch(url)
