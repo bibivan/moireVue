@@ -151,6 +151,7 @@ export default {
       this.$emit('update:colors', [])
       this.$emit('update:materials', [])
       this.$emit('update:seasons', [])
+      this.$router.push({ path: '/' })
     },
     toggleValue (value, arr) {
       if (arr.includes(value)) {

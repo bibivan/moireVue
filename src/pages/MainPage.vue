@@ -23,10 +23,8 @@
         />
       </aside>
       <section class="catalog">
-        <div class="catalog__list" v-if="productsLoading">
-          <div class="preloader">
+        <div class="catalog__list preloader" v-if="productsLoading">
             <div class="preloader__spinner"></div>
-          </div>
         </div>
         <div class="catalog__list" v-else-if="productsLoadingFailed">
           {{ productsLoadingFailed }}
@@ -125,15 +123,20 @@ export default {
     },
     filterSeasons () {
       this.loadProducts(this.params)
+    },
+    $route () {
+      this.filterCategoryId = this.$route.params.categoryId
     }
   },
   created () {
     this.loadFiltersData()
+    if (this.$route.params.categoryId) {
+      this.filterCategoryId = this.$route.params.categoryId
+    }
     this.loadProducts(this.params)
   }
 }
 </script>
 
 <style scoped>
-
 </style>

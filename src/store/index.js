@@ -6,6 +6,7 @@ import categories from './modules/mainPage/filtersData/categories'
 import colors from './modules/mainPage/filtersData/colors'
 import seasons from './modules/mainPage/filtersData/seasons'
 import materials from './modules/mainPage/filtersData/materials'
+import productPage from './modules/productPage/index'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     categories,
     colors,
     materials,
-    seasons
+    seasons,
+    productPage
   }
 })
