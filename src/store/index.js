@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cart from './modules/cart'
-import products from './modules/products'
+import products from './modules/mainPage/products'
+import categories from './modules/mainPage/filtersData/categories'
+import colors from './modules/mainPage/filtersData/colors'
+import seasons from './modules/mainPage/filtersData/seasons'
+import materials from './modules/mainPage/filtersData/materials'
 
 Vue.use(Vuex)
 
@@ -14,6 +18,10 @@ export default new Vuex.Store({
   },
   modules: {
     cart,
-    products
+    products,
+    categories,
+    colors,
+    materials,
+    seasons
   }
 })

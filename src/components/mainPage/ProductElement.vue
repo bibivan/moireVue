@@ -20,7 +20,7 @@
           <input class="colors__radio sr-only" type="radio" :value="item.color.code"
                  v-model="currentColor"/>
           <span class="colors__value"
-                :style="{ backgroundColor: item.color.code, boxShadow: shadow }"> </span>
+                :style="{ backgroundColor: item.color.code }"> </span>
         </label>
       </li>
     </ul>
@@ -33,28 +33,14 @@ import numberFormat from '@/helpers/numberFormat'
 export default {
   data () {
     return {
-      currentColor: this.product.colors[0].color.code,
-      // currentImg: this.product.colors[0].gallery[0].file.url,
-      shadow: '0 0 3px 1px #666'
+      currentColor: this.product.colors[0].color.code
     }
   },
   props: ['product'],
   computed: {
-    // currentImg () {
-    //   if (this.product.colors[0].gallery !== null) {
-    //     return this.product.colors[0].gallery[0].file.url
-    //   } else {
-    //     return null
-    //   }
-    // }
-  },
-  watch: {
-    currentColor (value) {
-      this.product.colors.filter(item => {
-        if (item.color.code === value) {
-          this.currentImg = item.gallery[0].file.url
-        }
-      })
+    currentImg () {
+      const color = this.product.colors.find(c => c.color.code === this.currentColor)
+      return color && color.gallery ? color.gallery[0].file.url : 'https://i.ibb.co/XbXTCMH/no-photo.jpg'
     }
   },
   methods: {
@@ -64,3 +50,9 @@ export default {
   }
 }
 </script>
+
+<style>
+  .colors__value {
+    box-shadow: 0 0 3px 1px #666;
+  }
+</style>

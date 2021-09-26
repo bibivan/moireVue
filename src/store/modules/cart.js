@@ -1,3 +1,4 @@
+import axios from 'axios'
 import API_BASE_URL from '@/config'
 
 export default {
@@ -26,18 +27,19 @@ export default {
   actions: {
     async loadCart (context) {
       context.commit('setCartLoadingStatus', true)
-      const url = new URL('/api/baskets', API_BASE_URL)
-      url.searchParams.append('userAccessKey', context.state.userAccessKey)
-      const response = await fetch(url)
-
-      if (response.ok) {
-        const data = await response.json()
-        if (!context.state.userAccessKey) {
-          localStorage.setItem('userAccessKey', data.user.accessKey)
-          context.commit('updateUserAccessKey', data.user.accessKey)
+      const response = await axios.get(API_BASE_URL + '/api/baskets', {
+        params: {
+          userAccessKey: context.state.userAccessKey
         }
-        context.commit('updateCartProductsData', data.items)
-      } else {
+      })
+
+      try {
+        if (!context.state.userAccessKey) {
+          localStorage.setItem('userAccessKey', response.data.user.accessKey)
+          context.commit('updateUserAccessKey', response.data.user.accessKey)
+        }
+        context.commit('updateCartProductsData', response.data.items)
+      } catch {
         context.commit('setCartLoadingFailed', true)
       }
       context.commit('setCartLoadingStatus', false)
