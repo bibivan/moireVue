@@ -44,8 +44,8 @@
               class="colors__radio sr-only"
               type="checkbox"
               name="color"
-              :value="colorItem.code"
-              @change="toggleValue(colorItem.id, currentColors)"
+              :value="colorItem.id"
+              v-model="currentColors"
             />
             <span class="colors__value" :style="{ backgroundColor: colorItem.code }"> </span>
           </label>
@@ -64,11 +64,11 @@
             <input class="check-list__check sr-only"
                    type="checkbox"
                    name="material"
-                   :value="material.code"
-                   @change="toggleValue(material.id, currentMaterials)">
+                   :value="material.id"
+                   v-model="currentMaterials">
             <span class="check-list__desc">
                     {{ material.title }}
-                    <span>(3)</span>
+                    <span>({{ material.productsCount }})</span>
                   </span>
           </label>
         </li>
@@ -86,11 +86,11 @@
             <input class="check-list__check sr-only"
                    type="checkbox"
                    name="collection"
-                   value="лето"
-                   @change="toggleValue(season.id, currentSeasons)">
+                   :value="season.id"
+                   v-model="currentSeasons">
             <span class="check-list__desc">
                     {{ season.title }}
-                    <span>(2)</span>
+                    <span>({{ season.productsCount }})</span>
                   </span>
           </label>
         </li>
@@ -100,7 +100,12 @@
     <button class="filter__submit button button--primery" type="submit">
       Применить
     </button>
-    <button class="filter__reset button button--second" type="button" @click.prevent="reset">
+    <button
+      v-show="filtersEmpty"
+      class="filter__reset button button--second"
+      type="button"
+      @click.prevent="reset"
+    >
       Сбросить
     </button>
   </form>
@@ -133,7 +138,17 @@ export default {
       'colorsData',
       'materialsData',
       'seasonsData'
-    ])
+    ]),
+    filtersEmpty () {
+      return !(
+        this.currentPriceFrom === 0 &&
+        this.currentPriceTo === 0 &&
+        this.currentCategoryId === 0 &&
+        this.currentColors.length === 0 &&
+        this.currentMaterials.length === 0 &&
+        this.currentSeasons.length === 0
+      )
+    }
   },
   methods: {
     submit () {
@@ -151,14 +166,8 @@ export default {
       this.$emit('update:colors', [])
       this.$emit('update:materials', [])
       this.$emit('update:seasons', [])
-      this.$router.push({ path: '/' })
-    },
-    toggleValue (value, arr) {
-      if (arr.includes(value)) {
-        const index = arr.indexOf(value)
-        arr.splice(index, 1)
-      } else {
-        arr.push(value)
+      if (window.location.hash.length > 2) {
+        this.$router.push({ path: '/' })
       }
     }
   },
@@ -186,7 +195,7 @@ export default {
 </script>
 
 <style scoped>
-  .loading-error {
-    color: red;
-  }
+.loading-error {
+  color: red;
+}
 </style>

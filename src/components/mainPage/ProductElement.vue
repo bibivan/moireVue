@@ -1,12 +1,12 @@
 <template>
   <div>
-    <router-link class="catalog__pic" :to="{ name: 'product', params: {id: product.id}}">
+    <router-link class="catalog__pic" :to="{ name: 'product', params: {id: product.id, colorId: currentColorId}}">
       <img :src="currentImg"
             :alt="product.title"/>
     </router-link>
 
     <h3 class="catalog__title">
-      <router-link :to="{ name: 'product', params: {id: product.id}}">
+      <router-link :to="{ name: 'product', params: {id: product.id, colorId: currentColorId}}">
         {{ product.title }}
       </router-link>
     </h3>
@@ -41,6 +41,10 @@ export default {
     currentImg () {
       const color = this.product.colors.find(c => c.color.code === this.currentColor)
       return color && color.gallery ? color.gallery[0].file.url : 'https://i.ibb.co/XbXTCMH/no-photo.jpg'
+    },
+    currentColorId () {
+      const color = this.product.colors.find(c => c.color.code === this.currentColor)
+      return color && color.id ? color.id : ''
     }
   },
   methods: {

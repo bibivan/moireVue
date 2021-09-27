@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes = [
   { name: 'main', component: MainPage, path: '/' },
   { name: 'filter', component: MainPage, path: '/:category/:categoryId' },
-  { name: 'product', component: ProductPage, path: '/product/:id' },
+  { name: 'product', component: ProductPage, path: '/product/:id/:colorId' },
   { name: 'notFound', component: NotFoundPage, path: '*' }
 ]
 

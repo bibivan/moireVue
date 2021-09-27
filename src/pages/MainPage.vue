@@ -100,28 +100,7 @@ export default {
 
   },
   watch: {
-    page () {
-      this.loadProducts(this.params)
-    },
-    productsPerPage () {
-      this.loadProducts(this.params)
-    },
-    filterPriceFrom () {
-      this.loadProducts(this.params)
-    },
-    filterPriceTo () {
-      this.loadProducts(this.params)
-    },
-    filterCategoryId () {
-      this.loadProducts(this.params)
-    },
-    filterColors () {
-      this.loadProducts(this.params)
-    },
-    filterMaterials () {
-      this.loadProducts(this.params)
-    },
-    filterSeasons () {
+    params () {
       this.loadProducts(this.params)
     },
     $route () {
