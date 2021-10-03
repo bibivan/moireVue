@@ -1,5 +1,9 @@
 <template>
-  <main class="content container">
+  <BasePreloader v-if="loading"/>
+  <main class="content container" v-else-if="notDeleted">
+    Произошла ошибка при удалении товара. Перезагрузите страницу и попробуйте еще раз
+  </main>
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -34,7 +38,7 @@
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
-            <CartItem v-for="item in products" :key="item.productId" :item="item"/>
+            <CartItem v-for="item in products" :key="item.id" :item="item"/>
           </ul>
         </div>
 
@@ -46,9 +50,11 @@
             Итого: <span>{{ totalPrice | numberFormat }} ₽</span>
           </p>
 
-          <button class="cart__button button button--primery" type="submit">
-            Оформить заказ
-          </button>
+          <router-link :to="{ name: 'order'}">
+            <button class="cart__button button button--primery" type="submit">
+              Оформить заказ
+            </button>
+          </router-link>
         </div>
       </form>
     </section>
@@ -60,13 +66,16 @@
 import { mapActions, mapGetters } from 'vuex'
 import CartItem from '@/components/cartPage/CartItem'
 import numberFormat from '@/helpers/numberFormat'
+import BasePreloader from '../components/base/BasePreloader'
 
 export default {
   name: 'CartPage',
-  components: { CartItem },
+  components: {
+    BasePreloader,
+    CartItem
+  },
   data () {
     return {
-      cartProductsCount: 0,
       productsLoading: false,
       productsLoadingFailed: false
     }
@@ -78,20 +87,14 @@ export default {
     ...mapGetters({
       products: 'cartProductsData',
       totalPrice: 'cartTotalPrice',
-      notDeleted: 'notDeletedFromCart'
+      notDeleted: 'notDeletedFromCart',
+      loading: 'cartLoading',
+      loadingFailed: 'cartLoadingFailed'
     })
   },
   methods: {
-    ...mapActions(['loadCart']),
-    showLoading () {
-      this.productsLoading = true
-      this.loadCart().then(() => {
-        this.productsLoading = false
-      })
-    }
-  },
-  created () {
-    this.showLoading()
+    ...mapActions(['loadCart'])
+
   }
 }
 </script>

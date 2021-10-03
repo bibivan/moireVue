@@ -122,12 +122,12 @@ export default {
     return {
       loading: false,
       currentFilters: {
-        priceFrom: 0,
-        priceTo: 0,
-        categoryId: 0,
-        colors: [],
-        materials: [],
-        seasons: []
+        priceFrom: this.filters.priceFrom || 0,
+        priceTo: this.filters.priceTo || 0,
+        categoryId: this.filters.categoryId,
+        colors: this.filters.colors || [],
+        materials: this.filters.materials || [],
+        seasons: this.filters.seasons || []
       }
     }
   },
@@ -170,6 +170,11 @@ export default {
   watch: {
     filters (value) {
       this.currentFilters = value
+    },
+    '$route.params' () {
+      if (!this.$route.params.categoryId) {
+        this.reset()
+      }
     }
   }
 }

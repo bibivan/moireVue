@@ -30,6 +30,9 @@ export default {
     },
     setDeletedFromCartStatus (state, status) {
       state.notDeletedFromCart = status
+    },
+    resetCart (state) {
+      state.cartProductsData = []
     }
   },
   actions: {
@@ -56,7 +59,7 @@ export default {
     },
     async addProductToCart (context, data) {
       try {
-        const response = await axios.post(API_BASE_URL + '/api/baskets/products', data, {
+        const response = await axios.post(API_BASE_URL + '/api/baskets/products2', data, {
           params: {
             userAccessKey: context.state.userAccessKey
           }
@@ -68,10 +71,10 @@ export default {
         throw e
       }
     },
-    async deleteProductFromCart (context, id) {
+    async deleteProductFromCart (context, basketItemId) {
       try {
-        const response = axios.delete(API_BASE_URL + '/api/baskets/products', {
-          data: id,
+        const response = await axios.delete(API_BASE_URL + '/api/baskets/products2', {
+          data: { basketItemId },
           params: {
             userAccessKey: context.state.userAccessKey
           }
@@ -85,6 +88,9 @@ export default {
     }
   },
   getters: {
+    userAccessKey (state) {
+      return state.userAccessKey
+    },
     cartLoading (state) {
       return state.cartLoading
     },

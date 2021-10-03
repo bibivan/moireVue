@@ -23,20 +23,17 @@ export default {
   },
   actions: {
     async loadProducts (context, params) {
-      clearTimeout(this.loadProductsTimer)
-      this.loadProductsTimer = setTimeout(async () => {
-        context.commit('setProductsLoadingStatus', true)
-        try {
-          const response = await axios.get(API_BASE_URL + '/api/products', {
-            params
-          })
-          context.commit('updateProductsData', response.data)
-        } catch (e) {
-          context.commit('setProductsLoadingFailed', 'Произошла ошибка при загрузке товаров')
-          throw (e)
-        }
-        context.commit('setProductsLoadingStatus', false)
-      }, 0)
+      context.commit('setProductsLoadingStatus', true)
+      try {
+        const response = await axios.get(API_BASE_URL + '/api/products', {
+          params
+        })
+        context.commit('updateProductsData', response.data)
+      } catch (e) {
+        context.commit('setProductsLoadingFailed', 'Произошла ошибка при загрузке товаров')
+        throw (e)
+      }
+      context.commit('setProductsLoadingStatus', false)
     }
   },
   getters: {

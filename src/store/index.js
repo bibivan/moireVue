@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cart from './modules/cart'
-import products from './modules/mainPage/products'
+import products from './modules/mainPage'
 import categories from './modules/mainPage/filtersData/categories'
 import colors from './modules/mainPage/filtersData/colors'
 import seasons from './modules/mainPage/filtersData/seasons'
 import materials from './modules/mainPage/filtersData/materials'
 import productPage from './modules/productPage/index'
+import orderPage from './modules/orderPage/index'
+import delivery from './modules/orderPage/delivery'
 
 Vue.use(Vuex)
 
@@ -24,6 +26,8 @@ export default new Vuex.Store({
     colors,
     materials,
     seasons,
-    productPage
+    productPage,
+    orderPage,
+    delivery
   }
 })

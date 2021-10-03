@@ -202,7 +202,6 @@ export default {
       this.currentTab = value
     },
     async addingToCart () {
-      console.log(this.productParams)
       this.productAddSending = true
       await this.addProductToCart(this.productParams).then(() => {
         this.productAddSending = false

@@ -109,16 +109,20 @@ export default {
     params () {
       this.loadProducts(this.params)
     },
-    $route () {
-      this.filters.categoryId = this.$route.params.categoryId
+    '$route.params': {
+      handler () {
+        this.loadFiltersData()
+        if (this.$route.params.categoryId) {
+          this.filters.categoryId = +this.$route.params.categoryId
+        } else {
+          this.filters.categoryId = 0
+        }
+        this.loadProducts(this.params)
+      },
+      immediate: true
     }
   },
   created () {
-    this.loadFiltersData()
-    if (this.$route.params.categoryId) {
-      this.filters.categoryId = this.$route.params.categoryId
-    }
-    this.loadProducts(this.params)
   }
 }
 </script>
