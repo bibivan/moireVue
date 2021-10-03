@@ -6,29 +6,28 @@
         <h1 class="content__title">
           Каталог
         </h1>
-        <span class="content__info">
-          {{ countProducts }}
-        </span>
+        <span class="content__info" v-if="countProducts === 1">
+        {{countProducts}} товар
+      </span>
+        <span class="content__info" v-else-if="countProducts < 5">
+        {{countProducts}} товара
+      </span>
+        <span class="content__info" v-else>
+        {{countProducts}} товаров
+      </span>
       </div>
     </div>
     <div class="content__catalog">
-      <aside class="filter">
+      <aside class="filter" v-show="!productsLoadingFailed">
         <ProductFilter
-          :price-from.sync="filterPriceFrom"
-          :priceTo.sync="filterPriceTo"
-          :category-id.sync="filterCategoryId"
-          :colors.sync="filterColors"
-          :materials.sync="filterMaterials"
-          :seasons.sync="filterSeasons"
+          :filters.sync="filters"
         />
       </aside>
       <section class="catalog">
-        <div class="catalog__list preloader" v-if="productsLoading">
-            <div class="preloader__spinner"></div>
-        </div>
-        <div class="catalog__list" v-else-if="productsLoadingFailed">
+        <BasePreloader class="catalog__list" v-if="productsLoading"/>
+        <NotFoundPage class="catalog__list" v-else-if="productsLoadingFailed">
           {{ productsLoadingFailed }}
-        </div>
+        </NotFoundPage>
         <ProductList :products="productsData.items" v-else/>
         <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage"/>
       </section>
@@ -38,13 +37,17 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import NotFoundPage from './NotFoundPage'
 import ProductList from '@/components/mainPage/ProductList'
 import ProductFilter from '@/components/mainPage/ProductFilter'
 import BasePagination from '@/components/base/BasePagination'
+import BasePreloader from '@/components/base/BasePreloader'
 
 export default {
   name: 'MainPage',
   components: {
+    NotFoundPage,
+    BasePreloader,
     ProductList,
     ProductFilter,
     BasePagination
@@ -53,12 +56,14 @@ export default {
     return {
       page: 1,
       productsPerPage: 14,
-      filterPriceFrom: '',
-      filterPriceTo: '',
-      filterCategoryId: '',
-      filterColors: [],
-      filterMaterials: [],
-      filterSeasons: []
+      filters: {
+        priceFrom: 0,
+        priceTo: 0,
+        categoryId: 0,
+        colors: [],
+        materials: [],
+        seasons: []
+      }
     }
   },
   computed: {
@@ -74,12 +79,12 @@ export default {
       return {
         page: this.page,
         limit: this.productsPerPage,
-        minPrice: this.filterPriceFrom,
-        maxPrice: this.filterPriceTo,
-        categoryId: this.filterCategoryId,
-        colorIds: this.filterColors,
-        materialIds: this.filterMaterials,
-        seasonIds: this.filterSeasons
+        minPrice: this.filters.priceFrom,
+        maxPrice: this.filters.priceTo,
+        categoryId: this.filters.categoryId,
+        colorIds: this.filters.colors,
+        materialIds: this.filters.materials,
+        seasonIds: this.filters.seasons
       }
     }
   },
@@ -97,20 +102,21 @@ export default {
       await this.loadMaterials()
       await this.loadSeasons()
     }
-
   },
   watch: {
+    filters () {
+    },
     params () {
       this.loadProducts(this.params)
     },
     $route () {
-      this.filterCategoryId = this.$route.params.categoryId
+      this.filters.categoryId = this.$route.params.categoryId
     }
   },
   created () {
     this.loadFiltersData()
     if (this.$route.params.categoryId) {
-      this.filterCategoryId = this.$route.params.categoryId
+      this.filters.categoryId = this.$route.params.categoryId
     }
     this.loadProducts(this.params)
   }

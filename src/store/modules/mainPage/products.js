@@ -31,8 +31,9 @@ export default {
             params
           })
           context.commit('updateProductsData', response.data)
-        } catch {
+        } catch (e) {
           context.commit('setProductsLoadingFailed', 'Произошла ошибка при загрузке товаров')
+          throw (e)
         }
         context.commit('setProductsLoadingStatus', false)
       }, 0)

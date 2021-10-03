@@ -21,8 +21,9 @@ export default {
       try {
         const response = await axios.get(API_BASE_URL + '/api/materials')
         context.commit('updateMaterialsData', response.data.items)
-      } catch {
+      } catch (e) {
         context.commit('setMaterialsLoadingFailed', 'Не удалось загрузить список материалов')
+        throw (e)
       }
     }
   },

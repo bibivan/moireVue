@@ -6,6 +6,8 @@ export default {
     return {
       cartLoading: false,
       cartLoadingFailed: false,
+      notAddedToCart: false,
+      notDeletedFromCart: false,
       userAccessKey: null,
       cartProductsData: []
     }
@@ -20,29 +22,66 @@ export default {
     setCartLoadingFailed (state, failed) {
       state.cartLoadingFailed = failed
     },
-    setCartLoadingStatus (state, loading) {
-      state.cartLoading = loading
+    setCartLoadingStatus (state, status) {
+      state.cartLoading = status
+    },
+    setAddedToCartStatus (state, status) {
+      state.notAddedToCart = status
+    },
+    setDeletedFromCartStatus (state, status) {
+      state.notDeletedFromCart = status
     }
   },
   actions: {
     async loadCart (context) {
       context.commit('setCartLoadingStatus', true)
-      const response = await axios.get(API_BASE_URL + '/api/baskets', {
-        params: {
-          userAccessKey: context.state.userAccessKey
-        }
-      })
 
       try {
+        const response = await axios.get(API_BASE_URL + '/api/baskets', {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+
         if (!context.state.userAccessKey) {
           localStorage.setItem('userAccessKey', response.data.user.accessKey)
           context.commit('updateUserAccessKey', response.data.user.accessKey)
         }
         context.commit('updateCartProductsData', response.data.items)
-      } catch {
-        context.commit('setCartLoadingFailed', true)
+      } catch (e) {
+        context.commit('setCartLoadingFailed', 'Произошла ошибка при загрузке корзины товаров')
+        throw e
       }
       context.commit('setCartLoadingStatus', false)
+    },
+    async addProductToCart (context, data) {
+      try {
+        const response = await axios.post(API_BASE_URL + '/api/baskets/products', data, {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+
+        context.commit('updateCartProductsData', response.data.items)
+      } catch (e) {
+        context.commit('setAddedToCartStatus', 'Произошла ошибка при добавлении товара')
+        throw e
+      }
+    },
+    async deleteProductFromCart (context, id) {
+      try {
+        const response = axios.delete(API_BASE_URL + '/api/baskets/products', {
+          data: id,
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+
+        context.commit('updateCartProductsData', response.data.items)
+      } catch (e) {
+        context.commit('setDeletedFromCartStatus', 'Произошла ошибка при удалении товара мз корзины')
+        throw e
+      }
     }
   },
   getters: {
@@ -54,6 +93,17 @@ export default {
     },
     cartProductsData (state) {
       return state.cartProductsData
+    },
+    cartTotalPrice (state) {
+      return state.cartProductsData.reduce((acc, item) => {
+        return (item.product.price * item.quantity) + acc
+      }, 0)
+    },
+    notAddedToCart (state) {
+      return state.notAddedToCart
+    },
+    notDeletedFromCart (state) {
+      return state.notDeletedFromCart
     }
   }
 }

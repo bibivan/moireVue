@@ -1,11 +1,11 @@
 <template>
-  <main class="content container" v-if="loadingPage">
-    <div class="preloader">
-      <div class="preloader__spinner"></div>
-    </div>
-  </main>
-  <main class="content container" v-else-if="productLoadingFailed">
+  <BasePreloader class="content container" v-if="pageLoading"/>
+  <NotFoundPage v-else-if="productLoadingFailed">
     {{ productLoadingFailed }}
+  </NotFoundPage>
+  <main class="content container" v-else-if="notAddedToCart">
+    {{ notAddedToCart }}.
+    Перезагрузите страницу и попробуйте еще раз
   </main>
   <main class="content container" v-else>
     <div class="content__top">
@@ -64,9 +64,9 @@
           {{ productItem.title }}
         </h2>
         <div class="item__form">
-          <form class="form" action="#" method="POST">
+          <form class="form" action="#" method="POST" @submit.prevent="addingToCart">
             <div class="item__row item__row--center">
-              <SetQuantity :quantity.sync="productAmount"/>
+              <SetQuantity :quantity.sync="productQuantity"/>
 
               <b class="item__price">
                 {{ productItem.price | numberFormat }}
@@ -107,7 +107,10 @@
             </div>
 
             <button class="item__button button button--primery" type="submit">
-              В корзину
+              <BasePreloader v-show="productAddSending"/>
+              <span :class="{ hidden: productAddSending }">
+                В корзину
+              </span>
             </button>
           </form>
         </div>
@@ -136,65 +139,88 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import NotFoundPage from './NotFoundPage'
+import BasePreloader from '@/components/base/BasePreloader'
 import SetQuantity from '@/components/base/SetQuantity'
+import { spareImg } from '@/config'
 import numberFormat from '@/helpers/numberFormat'
 
 export default {
   name: 'ProductPage',
   components: {
-    SetQuantity
+    SetQuantity,
+    NotFoundPage,
+    BasePreloader
   },
   data () {
     return {
-      loadingPage: false,
+      pageLoading: false,
+      productAddSending: false,
+      productAdded: false,
       galleryItem: 0,
-      productAmount: 1,
+      productQuantity: 1,
       currentColorId: +this.$route.params.colorId,
-      tabTitles: ['Информация о товаре', 'Доставка и возврат'],
       currentTab: 0,
+      tabTitles: ['Информация о товаре', 'Доставка и возврат'],
       deliveryInfo: 'В скором времени сюда добавят информацию о доставке и возврате товара'
     }
   },
   computed: {
     ...mapGetters([
       'productLoadingFailed',
-      'productItem'
+      'productItem',
+      'notAddedToCart'
     ]),
     currentColorItem () {
       const color = this.productItem.colors.find(c => c.id === this.currentColorId)
       return color && color.gallery ? color : []
     },
     currentImg () {
-      return this.currentColorItem ? this.currentColorItem.gallery[this.galleryItem].file.url : 'https://i.ibb.co/XbXTCMH/no-photo.jpg'
+      return this.currentColorItem ? this.currentColorItem.gallery[this.galleryItem].file.url : spareImg
     },
     currentSize () {
       return this.productItem ? this.productItem.sizes[0].id : ''
     },
     productDescription () {
       return this.productItem.content ? this.productItem.content : 'В скором времени сюда добавят описание товара'
+    },
+    productParams () {
+      return {
+        productId: this.productItem.id,
+        colorId: this.currentColorItem.color.id,
+        sizeId: this.currentSize,
+        quantity: this.productQuantity
+      }
     }
   },
   methods: {
-    ...mapActions(['loadProductItem']),
+    ...mapActions(['loadProductItem', 'addProductToCart']),
     changeGalleryItem (value) {
       this.galleryItem = value
     },
     changeTab (value) {
       this.currentTab = value
+    },
+    async addingToCart () {
+      console.log(this.productParams)
+      this.productAddSending = true
+      await this.addProductToCart(this.productParams).then(() => {
+        this.productAddSending = false
+      })
     }
   },
   watch: {
     '$route.params.id': {
       handler () {
-        this.loadingPage = true
+        this.pageLoading = true
         this.loadProductItem(+this.$route.params.id).then(() => {
-          this.loadingPage = false
+          this.pageLoading = false
         })
       },
       immediate: true
     },
     currentColorId (value) {
-      this.$router.push({ params: { colorId: value } })
+      this.$router.replace({ params: { colorId: value } })
     }
   },
   filters: {
@@ -202,3 +228,7 @@ export default {
   }
 }
 </script>
+
+<style>
+
+</style>

@@ -21,8 +21,9 @@ export default {
       try {
         const response = await axios.get(API_BASE_URL + '/api/productCategories')
         context.commit('updateCategoriesData', response.data.items)
-      } catch {
+      } catch (e) {
         context.commit('setCategoriesLoadingFailed', 'Не удалось загрузить список категорий товаров')
+        throw (e)
       }
     }
   },

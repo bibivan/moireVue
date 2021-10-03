@@ -169,7 +169,8 @@ a {
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
     width: 20px;
-    height: 20px
+    height: 20px;
+    cursor: pointer
 }
 
 .header {
@@ -1312,7 +1313,18 @@ a {
 }
 
 .item__button {
-    min-width: 200px
+    min-width: 200px;
+
+    .preloader {
+        height: auto;
+
+        &__spinner {
+            border: 3px solid #fff;
+            border-left-color: transparent;
+            width: 20px;
+            height: 20px;
+        }
+    }
 }
 
 .social {
@@ -1411,6 +1423,10 @@ a {
     justify-content: space-between;
     grid-column: 2/3;
     grid-row: 3/4
+}
+
+.hidden {
+    visibility: hidden;
 }
 
 /*# sourceMappingURL=style.min.css.map */

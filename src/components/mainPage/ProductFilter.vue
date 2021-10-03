@@ -6,11 +6,11 @@
     <fieldset class="form__block">
       <legend class="form__legend">Цена</legend>
       <label class="form__label form__label--price">
-        <input class="form__input" type="text" name="min-price" value="0" v-model.number="currentPriceFrom">
+        <input class="form__input" type="text" name="min-price" value="0" v-model.number="currentFilters.priceFrom">
         <span class="form__value">От</span>
       </label>
       <label class="form__label form__label--price">
-        <input class="form__input" type="text" name="max-price" value="12345" v-model.number="currentPriceTo">
+        <input class="form__input" type="text" name="max-price" value="12345" v-model.number="currentFilters.priceTo">
         <span class="form__value">До</span>
       </label>
     </fieldset>
@@ -25,7 +25,7 @@
           class="form__select"
           type="text"
           name="category"
-          v-model.number="currentCategoryId"
+          v-model.number="currentFilters.categoryId"
         >
           <option value="0">Все категории</option>
           <option :value="category.id" v-for="category in categoriesData" :key="category.id">
@@ -45,7 +45,7 @@
               type="checkbox"
               name="color"
               :value="colorItem.id"
-              v-model="currentColors"
+              v-model="currentFilters.colors"
             />
             <span class="colors__value" :style="{ backgroundColor: colorItem.code }"> </span>
           </label>
@@ -65,7 +65,7 @@
                    type="checkbox"
                    name="material"
                    :value="material.id"
-                   v-model="currentMaterials">
+                   v-model="currentFilters.materials">
             <span class="check-list__desc">
                     {{ material.title }}
                     <span>({{ material.productsCount }})</span>
@@ -87,7 +87,7 @@
                    type="checkbox"
                    name="collection"
                    :value="season.id"
-                   v-model="currentSeasons">
+                   v-model="currentFilters.seasons">
             <span class="check-list__desc">
                     {{ season.title }}
                     <span>({{ season.productsCount }})</span>
@@ -101,7 +101,7 @@
       Применить
     </button>
     <button
-      v-show="filtersEmpty"
+      v-show="checkCurrentFilters"
       class="filter__reset button button--second"
       type="button"
       @click.prevent="reset"
@@ -113,19 +113,22 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 
 export default {
   name: 'ProductFilter',
-  props: ['priceFrom', 'priceTo', 'categoryId', 'colors', 'materials', 'seasons'],
+  props: ['filters'],
   data () {
     return {
       loading: false,
-      currentPriceFrom: 0,
-      currentPriceTo: 0,
-      currentCategoryId: 0,
-      currentColors: [],
-      currentMaterials: [],
-      currentSeasons: []
+      currentFilters: {
+        priceFrom: 0,
+        priceTo: 0,
+        categoryId: 0,
+        colors: [],
+        materials: [],
+        seasons: []
+      }
     }
   },
   computed: {
@@ -139,56 +142,34 @@ export default {
       'materialsData',
       'seasonsData'
     ]),
-    filtersEmpty () {
-      return !(
-        this.currentPriceFrom === 0 &&
-        this.currentPriceTo === 0 &&
-        this.currentCategoryId === 0 &&
-        this.currentColors.length === 0 &&
-        this.currentMaterials.length === 0 &&
-        this.currentSeasons.length === 0
-      )
+    emptyFilterProps () {
+      return {
+        priceFrom: 0,
+        priceTo: 0,
+        categoryId: 0,
+        colors: [],
+        materials: [],
+        seasons: []
+      }
+    },
+    checkCurrentFilters () {
+      return !_.isEqual(this.emptyFilterProps, this.currentFilters)
     }
   },
   methods: {
     submit () {
-      this.$emit('update:priceFrom', this.currentPriceFrom)
-      this.$emit('update:priceTo', this.currentPriceTo)
-      this.$emit('update:categoryId', this.currentCategoryId)
-      this.$emit('update:colors', this.currentColors)
-      this.$emit('update:materials', this.currentMaterials)
-      this.$emit('update:seasons', this.currentSeasons)
+      this.$emit('update:filters', { ...this.currentFilters })
     },
     reset () {
-      this.$emit('update:priceFrom', 0)
-      this.$emit('update:priceTo', 0)
-      this.$emit('update:categoryId', 0)
-      this.$emit('update:colors', [])
-      this.$emit('update:materials', [])
-      this.$emit('update:seasons', [])
+      this.$emit('update:filters', { ...this.emptyFilterProps })
       if (window.location.hash.length > 2) {
-        this.$router.push({ path: '/' })
+        this.$router.replace({ path: '/' })
       }
     }
   },
   watch: {
-    priceFrom (value) {
-      this.currentPriceFrom = value
-    },
-    priceTo (value) {
-      this.currentPriceTo = value
-    },
-    categoryId (value) {
-      this.currentCategoryId = value
-    },
-    colors (value) {
-      this.currentColors = value
-    },
-    materials (value) {
-      this.currentMaterials = value
-    },
-    seasons (value) {
-      this.currentSeasons = value
+    filters (value) {
+      this.currentFilters = value
     }
   }
 }

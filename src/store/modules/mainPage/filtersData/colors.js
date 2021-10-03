@@ -21,8 +21,9 @@ export default {
       try {
         const response = await axios.get(API_BASE_URL + '/api/colors')
         context.commit('updateColorsData', response.data.items)
-      } catch {
+      } catch (e) {
         context.commit('setColorsLoadingFailed', 'Не удалось загрузить список цветов')
+        throw (e)
       }
     }
   },

@@ -21,8 +21,9 @@ export default {
       try {
         const response = await axios.get(API_BASE_URL + '/api/seasons')
         context.commit('updateSeasonsData', response.data.items)
-      } catch {
+      } catch (e) {
         context.commit('setSeasonsLoadingFailed', 'Не удалось загрузить список коллекций')
+        throw (e)
       }
     }
   },
