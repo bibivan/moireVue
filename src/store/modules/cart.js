@@ -59,7 +59,7 @@ export default {
     },
     async addProductToCart (context, data) {
       try {
-        const response = await axios.post(API_BASE_URL + '/api/baskets/products2', data, {
+        const response = await axios.post(API_BASE_URL + '/api/baskets/products', data, {
           params: {
             userAccessKey: context.state.userAccessKey
           }
@@ -73,7 +73,7 @@ export default {
     },
     async deleteProductFromCart (context, basketItemId) {
       try {
-        const response = await axios.delete(API_BASE_URL + '/api/baskets/products2', {
+        const response = await axios.delete(API_BASE_URL + '/api/baskets/products', {
           data: { basketItemId },
           params: {
             userAccessKey: context.state.userAccessKey
