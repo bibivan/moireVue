@@ -8,7 +8,8 @@ import seasons from './modules/mainPage/filtersData/seasons'
 import materials from './modules/mainPage/filtersData/materials'
 import productPage from './modules/productPage/index'
 import orderPage from './modules/orderPage/index'
-import delivery from './modules/orderPage/delivery'
+import deliveries from './modules/orderPage/deliveries'
+import payments from './modules/orderPage/payments'
 
 Vue.use(Vuex)
 
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     seasons,
     productPage,
     orderPage,
-    delivery
+    deliveries,
+    payments
   }
 })

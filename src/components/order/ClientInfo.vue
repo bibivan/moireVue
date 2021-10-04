@@ -8,23 +8,23 @@
 
     <ul class="dictionary">
       <li class="dictionary__item">
-        <span class="dictionary__key">Получатель</span>
+        <span class="dictionary__key">Получатель:</span>
         <span class="dictionary__value">{{ orderInfo.name }}</span>
       </li>
       <li class="dictionary__item">
-        <span class="dictionary__key">Адрес</span>
+        <span class="dictionary__key">Адрес:</span>
         <span class="dictionary__value">{{ orderInfo.address }}</span>
       </li>
       <li class="dictionary__item">
-        <span class="dictionary__key">Телефон</span>
+        <span class="dictionary__key">Телефон:</span>
         <span class="dictionary__value">{{ orderInfo.phone }}</span>
       </li>
       <li class="dictionary__item">
-        <span class="dictionary__key">Email</span>
+        <span class="dictionary__key">Email:</span>
         <span class="dictionary__value">{{ orderInfo.email }}</span>
       </li>
       <li class="dictionary__item">
-        <span class="dictionary__key">Способ</span>
+        <span class="dictionary__key">Способ оплаты:</span>
         <span class="dictionary__value">картой при получении</span>
       </li>
     </ul>
@@ -34,6 +34,6 @@
 <script>
 export default {
   name: 'ClientInfo',
-  props: ['orderInfo'],
-};
+  props: ['orderInfo']
+}
 </script>

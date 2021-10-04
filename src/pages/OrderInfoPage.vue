@@ -1,11 +1,7 @@
 <template>
-  <main class="content container" v-if="loading">
-    <div class="preloader">
-      <div class="preloader__spinner"></div>
-    </div>
-  </main>
-  <main class="content container" v-else-if="loadingFailed">
-    <p>Произошла ошибка при загрузке</p>
+  <BasePreloader v-if="loading"/>
+  <main class="content container" v-else-if="orderLoadingFailed">
+    <p>{{ orderLoadingFailed }}</p>
   </main>
   <main class="content container" v-else>
     <div class="content__top">
@@ -35,48 +31,54 @@
     <section class="cart">
       <form class="cart__form form" action="#" method="POST">
 
-<!--        <ClientInfo :orderInfo="orderInfo"/>-->
+        <ClientInfo :orderInfo="orderInfo"/>
 
-<!--        <OrderedProductsInfo :orderInfo="orderInfo"/>-->
+        <ProductsInfoList :products="orderInfo.basket.items" :totalPrice="orderInfo.totalPrice"
+                          :delivery="deliveryInfo">
+        </ProductsInfoList>
       </form>
     </section>
   </main>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-// import OrderedProductsInfo from '@/components/oderInfoPage/OrderedProductsInfo.vue'
-// import ClientInfo from '@/components/oderInfoPage/ClientInfo.vue'
+import { mapGetters, mapActions } from 'vuex'
+import ClientInfo from '../components/order/ClientInfo.vue'
+import ProductsInfoList from '@/components/order/ProductsInfoList.vue'
+import BasePreloader from '../components/base/BasePreloader'
 
 export default {
   name: 'OrderInfoPage',
   components: {
-    // ClientInfo,
-    // OrderedProductsInfo
+    ClientInfo,
+    ProductsInfoList,
+    BasePreloader
   },
   data () {
     return {
-      loading: false,
-      loadingFailed: false
+      loading: false
     }
   },
   computed: {
-    ...mapGetters({
-      orderInfo: 'orderDetailProducts'
-    })
+    ...mapGetters(['orderInfo', 'orderLoadingFailed']),
+    deliveryInfo () {
+      return this.orderInfo.deliveryType ? this.orderInfo.deliveryType : 'Не обнаружен'
+    }
+  },
+  methods: {
+    ...mapActions(['loadOrderInfo']),
+    async loadOrder () {
+      this.loading = true
+      if (this.orderInfo && this.orderInfo.id === +this.$route.params.id) {
+        this.loading = false
+        return
+      }
+      await this.loadOrderInfo(this.$route.params.id)
+      this.loading = false
+    }
   },
   created () {
-    this.loading = true
-    this.loadingFailed = false
-    if (this.$store.state.orderInfo && this.$store.state.orderInfo.id === +this.$route.params.id) {
-      this.loading = false
-      return
-    }
-    this.$store.dispatch('loadOrderInfo', this.$route.params.id).catch(() => {
-      this.loadingFailed = true
-    }).then(() => {
-      this.loading = false
-    })
+    this.loadOrder()
   }
 }
 </script>

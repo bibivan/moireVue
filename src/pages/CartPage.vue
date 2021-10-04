@@ -3,6 +3,9 @@
   <main class="content container" v-else-if="notDeleted">
     Произошла ошибка при удалении товара. Перезагрузите страницу и попробуйте еще раз
   </main>
+  <main class="content container empty" v-else-if="products.length === 0">
+    Коризна пуста. Выберите товары и возвращайтесь ;)
+  </main>
   <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">

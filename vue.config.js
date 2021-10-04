@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: '/moire/',
   css: {
     loaderOptions: {
       sass: {

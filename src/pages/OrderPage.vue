@@ -62,65 +62,60 @@
           </div>
 
           <div class="cart__options">
-            <h3 class="cart__title">Доставка</h3>
-            <ul class="cart__options options">
-              <li class="options__item">
-                <label class="options__label">
-                  <input class="options__radio sr-only" type="radio"
-                         name="delivery" value="0">
-                  <span class="options__value">
-                    Самовывоз <b>бесплатно</b>
-                  </span>
-                </label>
-              </li>
-              <li class="options__item">
-                <label class="options__label">
-                  <input class="options__radio sr-only" type="radio"
-                         name="delivery" value="500">
-                  <span class="options__value">
-                    Курьером <b>500 ₽</b>
-                  </span>
-                </label>
-              </li>
-            </ul>
+            <!--            <h3 class="cart__title">Доставка</h3>-->
+            <!--            <ul class="cart__options options" v-if="!deliveriesLoadingFailed">-->
+            <!--              <li class="options__item" v-for="item in deliveriesData" :key="item.title">-->
+            <!--                <label class="options__label">-->
+            <!--                  <input class="options__radio sr-only" type="radio"-->
+            <!--                         name="delivery" :value="item.id">-->
+            <!--                  <span class="options__value">-->
+            <!--                    {{ item.title }} <b>{{ item.price ? item.price : 'бесплатно' }}</b>-->
+            <!--                  </span>-->
+            <!--                </label>-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--            <div class="error" v-else-if="deliveriesLoadingFailed">-->
+            <!--              {{ deliveriesLoadingFailed }}-->
+            <!--            </div>-->
 
-<!--            <ul class="cart__options options" v-if="deliveryData">-->
-<!--              <li class="options__item" v-for="item in deliveryData" :key="item.title">-->
-<!--                <label class="options__label">-->
-<!--                  <input class="options__radio sr-only" type="radio"-->
-<!--                         name="delivery" :value="delivery.price">-->
-<!--                  <span class="options__value">-->
-<!--                    {{ delivery.title }} <b>{{ delivery.price ? delivery.price : 'бесплатно' }}</b>-->
-<!--                  </span>-->
-<!--                </label>-->
-<!--              </li>-->
-<!--            </ul>-->
+            <!--            <h3 class="cart__title">Оплата</h3>-->
+            <!--            <ul class="cart__options options" v-if="!paymentsLoadingFailed">-->
+            <!--              <li class="options__item" v-for="item in paymentsData" :key="item.title">-->
+            <!--                <label class="options__label">-->
+            <!--                  <input class="options__radio sr-only"-->
+            <!--                         type="radio"-->
+            <!--                         name="pay"-->
+            <!--                         :error="formError.deliveries"-->
+            <!--                         v-model="formData.deliveries"-->
+            <!--                         :value="item.id">-->
+            <!--                  <span class="options__value">-->
+            <!--                    {{ item.title }}-->
+            <!--                  </span>-->
+            <!--                </label>-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--            <div class="error" v-else-if="paymentsLoadingFailed">-->
+            <!--              {{ paymentsLoadingFailed }}-->
+            <!--            </div>-->
 
-            <h3 class="cart__title">Оплата</h3>
-            <ul class="cart__options options">
-              <li class="options__item">
-                <label class="options__label">
-                  <input class="options__radio sr-only" type="radio"
-                         name="pay" value="card">
-                  <span class="options__value">
-                    Картой при получении
-                  </span>
-                </label>
-              </li>
-              <li class="options__item">
-                <label class="options__label">
-                  <input class="options__radio sr-only" type="radio"
-                         name="pay" value="cash">
-                  <span class="options__value">
-                    Наличными при получении
-                  </span>
-                </label>
-              </li>
-            </ul>
+            <OrderOptions title="Доставка"
+                         :error="formError.deliveryTypeId"
+                         v-model="formData.deliveryTypeId"
+                         :data="deliveriesData"
+                         :failed="deliveriesLoadingFailed"/>
+
+            <OrderOptions title="Оплата"
+                         :error="formError.paymentTypeId"
+                         v-model="formData.paymentTypeId"
+                         :data="paymentsData"
+                         :failed="paymentsLoadingFailed"/>
           </div>
         </div>
 
-        <OrderingProductsInfo/>
+        <ProductsInfoList :products="cartProductsData" :totalPrice="cartTotalPrice"
+                          :delivery="deliveryInfo">
+          <BaseButton title="Оформить заказ"/>
+        </ProductsInfoList>
 
         <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
@@ -137,33 +132,58 @@
 import { mapActions, mapGetters } from 'vuex'
 import BaseFormText from '@/components/base/BaseFormText.vue'
 import BaseFormTextarea from '@/components/base/BaseFormTextarea.vue'
-import OrderingProductsInfo from '@/components/orderPage/OrderingProductsInfo.vue'
+import OrderOptions from '../components/order/OrderOptions'
+import BaseButton from '@/components/base/BaseButton.vue'
+import ProductsInfoList from '@/components/order/ProductsInfoList.vue'
 
 export default {
   name: 'OrderPage',
   components: {
     BaseFormText,
     BaseFormTextarea,
-    OrderingProductsInfo
+    BaseButton,
+    ProductsInfoList,
+    OrderOptions
   },
   data () {
     return {
-      formData: {
-        deliveryTypeId: 2,
-        paymentTypeId: 2
-      },
+      formData: {},
       formError: {},
       formErrorMessage: ''
     }
   },
   computed: {
-    ...mapGetters(['userAccessKey', 'deliveryLoadingFailed', 'deliveryData'])
+    ...mapGetters([
+      'deliveriesLoadingFailed',
+      'deliveriesData',
+      'paymentsLoadingFailed',
+      'paymentsData',
+      'cartProductsData',
+      'cartTotalPrice'
+    ]),
+    deliveryInfo () {
+      let info
+      if (this.formData.deliveryTypeId && this.deliveriesData) {
+        info = {
+          ...this.deliveriesData[this.formData.deliveryTypeId - 1]
+        }
+      } else {
+        info = 'Не выбрано'
+      }
+      return info
+    }
   },
   methods: {
-    ...mapActions(['orderProducts', 'loadDelivery']),
+    ...mapActions(['orderProducts', 'loadDeliveries', 'loadPayments']),
     async order () {
+      this.formError = {}
+      this.formErrorMessage = ''
       try {
-        await this.orderProducts(this.formData, this.userAccessKey)
+        const response = await this.orderProducts(this.formData)
+        this.$router.push({
+          name: 'orderInfo',
+          params: { id: response.data.id }
+        })
       } catch (error) {
         this.formError = error.response.data.error.request || {}
         this.formErrorMessage = error.response.data.error.message
@@ -171,7 +191,8 @@ export default {
     }
   },
   created () {
-    this.loadDelivery()
+    this.loadDeliveries()
+    this.loadPayments()
   }
 }
 </script>

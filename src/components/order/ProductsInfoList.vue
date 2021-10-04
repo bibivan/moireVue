@@ -10,15 +10,22 @@
     </ul>
 
     <div class="cart__total">
-      <p>Доставка: <b>500 ₽</b></p>
+      <p>
+        Доставка:
+        <b v-if="typeof delivery === 'string'">{{ delivery }}</b>
+        <b v-else-if="+delivery.price === 0"> {{ delivery.title }}</b>
+        <b v-else> {{ delivery.price }} ₽</b>
+
+      </p>
       <p>
         Итого: <b>{{ products.length }}</b>
         <span v-if="products.length === 1"> товар на сумму </span>
         <span v-else-if="products.length < 5 && products.length !== 0"> товара на сумму </span>
         <span v-else> товаров на сумму </span>
-        <b>{{ totalPrice | numberFormat }} ₽</b></p>
+        <b>{{ totalPrice | numberFormat }} ₽</b>
+      </p>
+      <slot/>
     </div>
-    <slot/>
   </div>
 </template>
 
@@ -27,7 +34,7 @@ import numberFormat from '@/helpers/numberFormat'
 
 export default {
   name: 'ProductsInfoList',
-  props: ['products', 'totalPrice'],
+  props: ['products', 'totalPrice', 'delivery'],
   computed: {
   },
   filters: {

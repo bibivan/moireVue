@@ -965,6 +965,7 @@ a {
 }
 
 .options {
+    position: relative;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -1427,6 +1428,13 @@ a {
 
 .hidden {
     visibility: hidden;
+}
+
+.empty  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
 }
 
 /*# sourceMappingURL=style.min.css.map */
