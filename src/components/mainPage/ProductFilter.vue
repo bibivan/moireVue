@@ -120,15 +120,7 @@ export default {
   props: ['filters'],
   data () {
     return {
-      loading: false,
-      currentFilters: {
-        priceFrom: this.filters.priceFrom || 0,
-        priceTo: this.filters.priceTo || 0,
-        categoryId: this.filters.categoryId,
-        colors: this.filters.colors || [],
-        materials: this.filters.materials || [],
-        seasons: this.filters.seasons || []
-      }
+      loading: false
     }
   },
   computed: {
@@ -142,14 +134,34 @@ export default {
       'materialsData',
       'seasonsData'
     ]),
-    emptyFilterProps () {
-      return {
-        priceFrom: 0,
-        priceTo: 0,
-        categoryId: 0,
-        colors: [],
-        materials: [],
-        seasons: []
+    currentFilters: {
+      get () {
+        return {
+          priceFrom: this.filters.priceFrom || 0,
+          priceTo: this.filters.priceTo || 0,
+          categoryId: this.filters.categoryId,
+          colors: this.filters.colors || [],
+          materials: this.filters.materials || [],
+          seasons: this.filters.seasons || []
+        }
+      },
+      set (value) {
+        this.$emit('input', value)
+      }
+    },
+    emptyFilterProps: {
+      get () {
+        return {
+          priceFrom: 0,
+          priceTo: 0,
+          categoryId: 0,
+          colors: [],
+          materials: [],
+          seasons: []
+        }
+      },
+      set (value) {
+        this.$emit('input', value)
       }
     },
     checkCurrentFilters () {
@@ -158,10 +170,10 @@ export default {
   },
   methods: {
     submit () {
-      this.$emit('update:filters', { ...this.currentFilters })
+      this.$emit('update:filters', this.currentFilters)
     },
     reset () {
-      this.$emit('update:filters', { ...this.emptyFilterProps })
+      this.$emit('update:filters', this.emptyFilterProps)
       if (window.location.hash.length > 2) {
         this.$router.replace({ path: '/' })
       }

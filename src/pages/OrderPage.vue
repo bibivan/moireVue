@@ -62,42 +62,6 @@
           </div>
 
           <div class="cart__options">
-            <!--            <h3 class="cart__title">Доставка</h3>-->
-            <!--            <ul class="cart__options options" v-if="!deliveriesLoadingFailed">-->
-            <!--              <li class="options__item" v-for="item in deliveriesData" :key="item.title">-->
-            <!--                <label class="options__label">-->
-            <!--                  <input class="options__radio sr-only" type="radio"-->
-            <!--                         name="delivery" :value="item.id">-->
-            <!--                  <span class="options__value">-->
-            <!--                    {{ item.title }} <b>{{ item.price ? item.price : 'бесплатно' }}</b>-->
-            <!--                  </span>-->
-            <!--                </label>-->
-            <!--              </li>-->
-            <!--            </ul>-->
-            <!--            <div class="error" v-else-if="deliveriesLoadingFailed">-->
-            <!--              {{ deliveriesLoadingFailed }}-->
-            <!--            </div>-->
-
-            <!--            <h3 class="cart__title">Оплата</h3>-->
-            <!--            <ul class="cart__options options" v-if="!paymentsLoadingFailed">-->
-            <!--              <li class="options__item" v-for="item in paymentsData" :key="item.title">-->
-            <!--                <label class="options__label">-->
-            <!--                  <input class="options__radio sr-only"-->
-            <!--                         type="radio"-->
-            <!--                         name="pay"-->
-            <!--                         :error="formError.deliveries"-->
-            <!--                         v-model="formData.deliveries"-->
-            <!--                         :value="item.id">-->
-            <!--                  <span class="options__value">-->
-            <!--                    {{ item.title }}-->
-            <!--                  </span>-->
-            <!--                </label>-->
-            <!--              </li>-->
-            <!--            </ul>-->
-            <!--            <div class="error" v-else-if="paymentsLoadingFailed">-->
-            <!--              {{ paymentsLoadingFailed }}-->
-            <!--            </div>-->
-
             <OrderOptions title="Доставка"
                          :error="formError.deliveryTypeId"
                          v-model="formData.deliveryTypeId"
@@ -142,8 +106,8 @@ export default {
     BaseFormText,
     BaseFormTextarea,
     BaseButton,
-    ProductsInfoList,
-    OrderOptions
+    OrderOptions,
+    ProductsInfoList
   },
   data () {
     return {

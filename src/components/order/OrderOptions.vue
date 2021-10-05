@@ -5,7 +5,7 @@
       <li class="options__item" v-for="item in data" :key="item.title">
         <label class="options__label">
           <input class="options__radio sr-only" type="radio"
-                 name="delivery" :value="item.id" v-model="currentValue">
+                 :name="item.title | translit" :value="item.id" v-model="currentValue">
           <span class="options__value">
             {{ item.title }} <b v-if="item.price">{{ item.price === 0 ? 'бесплатно' : item.price }}</b>
           </span>
@@ -20,10 +20,15 @@
 </template>
 
 <script>
+import translit from '@/helpers/translit'
+
 export default {
   name: 'CartOptions',
   props: ['title', 'data', 'error', 'failed', 'value'],
   computed: {
+    inputName () {
+      return this.data.toString()
+    },
     currentValue: {
       get () {
         return this.value
@@ -32,6 +37,9 @@ export default {
         this.$emit('input', value)
       }
     }
+  },
+  filters: {
+    translit
   }
 }
 </script>

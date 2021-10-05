@@ -68,8 +68,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CartItem from '@/components/cartPage/CartItem'
-import numberFormat from '@/helpers/numberFormat'
 import BasePreloader from '../components/base/BasePreloader'
+import numberFormat from '@/helpers/numberFormat'
 
 export default {
   name: 'CartPage',
@@ -97,7 +97,6 @@ export default {
   },
   methods: {
     ...mapActions(['loadCart'])
-
   }
 }
 </script>

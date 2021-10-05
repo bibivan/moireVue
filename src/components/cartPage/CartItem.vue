@@ -10,7 +10,7 @@
       Цвет:
       <span>
         <i :style="{ backgroundColor: color.code }"></i>
-        {{ color.title }}
+        {{ color.title | localize('ru') }}
       </span>
     </p>
     <span class="product__code">
@@ -41,13 +41,15 @@ import { mapActions } from 'vuex'
 import SetQuantity from '@/components/base/SetQuantity'
 import { spareImg } from '@/config'
 import numberFormat from '@/helpers/numberFormat'
+import localize from '@/helpers/localizeRU'
 
 export default {
   name: 'CartItem',
   props: ['item'],
   components: { SetQuantity },
   filters: {
-    numberFormat
+    numberFormat,
+    localize
   },
   computed: {
     color () {
