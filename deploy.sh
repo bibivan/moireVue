@@ -14,6 +14,6 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f git@github.com:bibivan/moire.git master:gh-pages
+git push -f https://github.com/bibivan/moire.git master:gh-pages
 
 cd -
