@@ -17,7 +17,7 @@
       Артикул: {{ item.product.id }}
     </span>
 
-    <setQuantity :quantity.sync="item.quantity"/>
+    <setQuantity :quantity.sync="item.quantity"  @sendChanges="changeProductCount(currentItemParams)"/>
 
     <b class="product__price">
       {{ (item.product.price * item.quantity) | numberFormat }} ₽
@@ -57,10 +57,19 @@ export default {
     },
     img () {
       return this.item.color.gallery ? this.item.color.gallery[0].file.url : spareImg
+    },
+    currentItemParams () {
+      return {
+        basketItemId: this.item.id,
+        quantity: this.item.quantity
+      }
     }
   },
   methods: {
-    ...mapActions({ deleteProduct: 'deleteProductFromCart' })
+    ...mapActions({
+      deleteProduct: 'deleteProductFromCart',
+      changeProductCount: 'changeProductCount'
+    })
   }
 }
 </script>

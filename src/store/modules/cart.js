@@ -1,5 +1,6 @@
 import axios from 'axios'
 import API_BASE_URL from '@/config'
+// import { resolve } from 'eslint-plugin-promise/rules/lib/promise-statics'
 
 export default {
   state () {
@@ -71,7 +72,22 @@ export default {
         throw e
       }
     },
+    async changeProductCount (context, data) {
+      try {
+        const response = await axios.put(API_BASE_URL + '/api/baskets/products', data, {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+
+        context.commit('updateCartProductsData', response.data.items)
+      } catch (e) {
+        context.commit('setAddedToCartStatus', 'Произошла ошибка при добавлении товара')
+        throw e
+      }
+    },
     async deleteProductFromCart (context, basketItemId) {
+      context.commit('updateCartProductsData', context.state.cartProductsData.filter(p => p.id !== basketItemId))
       try {
         const response = await axios.delete(API_BASE_URL + '/api/baskets/products', {
           data: { basketItemId },

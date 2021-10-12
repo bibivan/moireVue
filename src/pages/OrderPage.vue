@@ -126,13 +126,11 @@ export default {
       'cartTotalPrice'
     ]),
     deliveryInfo () {
-      let info
+      let info = 'Не выбрано'
       if (this.formData.deliveryTypeId && this.deliveriesData) {
         info = {
           ...this.deliveriesData[this.formData.deliveryTypeId - 1]
         }
-      } else {
-        info = 'Не выбрано'
       }
       return info
     }

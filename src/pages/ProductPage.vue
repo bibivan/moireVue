@@ -172,6 +172,7 @@ export default {
       'notAddedToCart'
     ]),
     currentColorItem () {
+      console.log(this.currentColorId)
       const color = this.productItem.colors.find(c => c.id === this.currentColorId)
       return color && color.gallery ? color : []
     },
@@ -210,11 +211,20 @@ export default {
   },
   watch: {
     '$route.params.id': {
-      handler () {
+      async handler () {
         this.pageLoading = true
-        this.loadProductItem(+this.$route.params.id).then(() => {
-          this.pageLoading = false
-        })
+        try {
+          await this.loadProductItem(+this.$route.params.id)
+        } catch (e) {
+          if (e.message === 'Request failed with status code 400') {
+            this.orderNotExist = 'Вероятно, такого заказа не существует'
+          }
+        }
+
+        if (!this.productItem.colors.some(c => c.id === +this.$route.params.id)) {
+          this.currentColorId = this.productItem.colors[0].id
+        }
+        this.pageLoading = false
       },
       immediate: true
     },

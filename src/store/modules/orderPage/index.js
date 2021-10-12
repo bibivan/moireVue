@@ -46,7 +46,7 @@ export default {
         })
         context.commit('updateOrderInfo', response.data)
       } catch (e) {
-        context.commit('orderLoadingFailingStatus', 'Произошла ошибка при загрузки данных о заказе')
+        context.commit('orderLoadingFailingStatus', 'Произошла ошибка при загрузки данных о заказе.')
         throw e
       }
       return response

@@ -104,8 +104,6 @@ export default {
     }
   },
   watch: {
-    filters () {
-    },
     params () {
       this.loadProducts(this.params)
     },

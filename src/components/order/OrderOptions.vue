@@ -26,9 +26,6 @@ export default {
   name: 'CartOptions',
   props: ['title', 'data', 'error', 'failed', 'value'],
   computed: {
-    inputName () {
-      return this.data.toString()
-    },
     currentValue: {
       get () {
         return this.value

@@ -1,8 +1,9 @@
 <template>
   <BasePreloader v-if="loading"/>
-  <main class="content container" v-else-if="orderLoadingFailed">
-    <p>{{ orderLoadingFailed }}</p>
-  </main>
+  <NotFoundPage v-else-if="orderLoadingFailed">
+    {{ orderLoadingFailed }}
+    <span v-if="orderNotExist">{{ orderNotExist }}</span>
+  </NotFoundPage>
   <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
@@ -46,17 +47,20 @@ import { mapGetters, mapActions } from 'vuex'
 import ClientInfo from '../components/order/ClientInfo.vue'
 import ProductsInfoList from '@/components/order/ProductsInfoList.vue'
 import BasePreloader from '../components/base/BasePreloader'
+import NotFoundPage from './NotFoundPage'
 
 export default {
   name: 'OrderInfoPage',
   components: {
+    NotFoundPage,
     ClientInfo,
     ProductsInfoList,
     BasePreloader
   },
   data () {
     return {
-      loading: false
+      loading: false,
+      orderNotExist: false
     }
   },
   computed: {
@@ -68,12 +72,21 @@ export default {
   methods: {
     ...mapActions(['loadOrderInfo']),
     async loadOrder () {
+      let response
+
       this.loading = true
       if (this.orderInfo && this.orderInfo.id === +this.$route.params.id) {
         this.loading = false
         return
       }
-      await this.loadOrderInfo(this.$route.params.id)
+      try {
+        response = await this.loadOrderInfo(this.$route.params.id)
+        return response
+      } catch (e) {
+        if (e.message === 'Request failed with status code 400') {
+          this.orderNotExist = 'Вероятно, такого заказа не существует'
+        }
+      }
       this.loading = false
     }
   },
