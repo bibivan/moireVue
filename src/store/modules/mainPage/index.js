@@ -25,9 +25,7 @@ export default {
     async loadProducts (context, params) {
       context.commit('setProductsLoadingStatus', true)
       try {
-        const response = await axios.get(API_BASE_URL + '/api/products', {
-          params
-        })
+        const response = await axios.get(API_BASE_URL + '/api/products', { params })
         context.commit('updateProductsData', response.data)
       } catch (e) {
         context.commit('setProductsLoadingFailed', 'Произошла ошибка при загрузке товаров')
